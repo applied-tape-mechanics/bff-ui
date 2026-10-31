@@ -1,5 +1,6 @@
 services:
   bff-ui:
+    image: ghcr.io/applied-tape-mechanics/bff-ui:latest
     build: .
     container_name: bff-ui-showcase
     restart: unless-stopped
