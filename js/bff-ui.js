@@ -72,10 +72,16 @@ const BffUI = {
    * If not detected (e.g. static hosting on GitHub Pages), surfaces the JS client VM status.
    */
   async detectApi(options = {}) {
-    // Check for explicit query string override: ?static=1, ?offline=1, ?client_only=1
-    if (typeof window !== 'undefined' && window.location && window.location.search) {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('static') === '1' || params.get('offline') === '1' || params.get('client_only') === '1') {
+    // Check for explicit query string override or GitHub Pages static hosting
+    if (typeof window !== 'undefined' && window.location) {
+      const params = new URLSearchParams(window.location.search || '');
+      const isGhPages = window.location.hostname && window.location.hostname.endsWith('.github.io');
+      if (
+        isGhPages ||
+        params.get('static') === '1' ||
+        params.get('offline') === '1' ||
+        params.get('client_only') === '1'
+      ) {
         this.api.detected = false;
         this.api.checked = true;
         this.updateApiUi();
@@ -92,8 +98,13 @@ const BffUI = {
       const res = await fetch(this.api.healthUrl, { method: 'GET', signal: controller.signal });
       clearTimeout(timeoutId);
       if (res.ok) {
-        const data = await res.json().catch(() => ({}));
-        if (data.backend_enabled === false || data.backend === 'disabled') {
+        const data = await res.json().catch(() => null);
+        if (
+          !data ||
+          data.backend_enabled === false ||
+          data.backend === 'disabled' ||
+          !(data.status === 'UP' || data.status === 'ok' || data.status === 'healthy')
+        ) {
           this.api.detected = false;
         } else {
           this.api.detected = true;
