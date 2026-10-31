@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BFF UI Kit - Theme Switcher & Showcase</title>
+  <link rel="stylesheet" href="css/bff-theme.css">
+  <style>
+    .top-controls {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .showcase-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      width: 100%;
+    }
+    .alert-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .icon {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+    }
+    .message h2 {
+      font-size: 13px;
+      margin: 0 0 6px;
+      font-weight: bold;
+    }
+    .message p {
+      margin: 0;
+      line-height: 1.45;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="max-width: 960px;">
+    <!-- Top Theme Picker -->
+    <div class="top-controls">
+      <div class="bff-theme-picker">
+        <span style="font-weight:bold; font-size:11px;">Appearance:</span>
+        <select class="bff-theme-select" onchange="BffUI.setTheme(this.value)">
+          <option value="os9">OS 9</option>
+          <option value="osx">OS X</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <div class="badge-bar">
+        <span class="pulse-dot"></span>
+        <span>BFF Dynamic Design System v1.0.0</span>
+      </div>
+      <h1>Brainfuck Microservice Architecture</h1>
+      <p class="subtitle">Switchable Theme Engine &bull; OS 9 &amp; OS X</p>
+    </header>
+
+    <div class="showcase-grid">
+      <!-- Reference System Alert Window -->
+      <div class="window" style="width: 520px; max-width: 95vw;">
+        <div class="title-bar">
+          <div class="close-box" onclick="BffUI.showToast('Close box clicked')"></div>
+          <span class="title-text">System Diagnostics</span>
+        </div>
+        <div class="content">
+          <div class="alert-row">
+            <svg class="icon" viewBox="0 0 48 48">
+              <polygon points="24,4 45,42 3,42" fill="#fc0" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+              <polygon points="24,7 42,40 6,40" fill="none" stroke="#fff" stroke-width="1" opacity="0.7"/>
+              <rect x="22" y="16" width="4" height="13" fill="#000"/>
+              <rect x="22" y="32" width="4" height="4" fill="#000"/>
+            </svg>
+            <div class="message">
+              <h2>Brainfuck Virtual Machine Runtime Active</h2>
+              <p>The 64k memory tape is initialized and ready for streaming I/O. Use the Appearance switcher above to toggle between OS 9 and OS X.</p>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="footer">
+            <span class="status">Virtual Machine &bull; 65,536 cells</span>
+            <div class="btn-ring">
+              <button class="btn btn-primary" onclick="BffUI.showToast('All systems nominal.')">Run Check</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Dual Microservice Windows -->
+      <div class="grid" style="width: 100%;">
+        <div class="window">
+          <div class="title-bar">
+            <div class="close-box"></div>
+            <span class="title-text">Program Input</span>
+          </div>
+          <div class="content">
+            <div class="presets">
+              <span class="presets-label">Presets:</span>
+              <button class="preset-btn" onclick="setDemo('hello')">Hello World</button>
+              <button class="preset-btn" onclick="setDemo('fib')">Fibonacci</button>
+            </div>
+            <textarea id="demoInput">++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.</textarea>
+            <div class="divider"></div>
+            <div class="footer">
+              <button class="btn btn-secondary" onclick="document.getElementById('demoInput').value=''">Clear</button>
+              <div class="btn-ring">
+                <button class="btn btn-primary" onclick="runDemo()">Execute</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="window">
+          <div class="title-bar">
+            <div class="close-box"></div>
+            <span class="title-text">Standard Output</span>
+          </div>
+          <div class="content">
+            <div style="display:flex; justify-content:flex-end; margin-bottom: 8px;">
+              <button class="preset-btn" onclick="BffUI.copyText(document.getElementById('demoOutput').innerText)">Copy Output</button>
+            </div>
+            <pre class="output-view" id="demoOutput">Hello World!
+</pre>
+            <div class="divider"></div>
+            <div class="footer">
+              <span class="status">Status: Ready</span>
+              <span class="status" id="demoLength">Length: 106 instructions</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/applied-tape-mechanics/bff-interpreter@v1.0.0/bff-interpreter.js"></script>
+  <script src="js/bff-ui.js"></script>
+  <script>
+    function setDemo(type) {
+      if (type === 'hello') {
+        document.getElementById('demoInput').value = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.";
+      } else if (type === 'fib') {
+        document.getElementById('demoInput').value = "++++[>++++++++++++>+++++++++++>++++++++<<<-]>.>.>.<<+.>.>.<<.>.>.<<+.>.>.<<+.>.>.<<++.>.>.<<+++.>.>.<<-------.++.>.>.<<-.-.>.>.<<++.+.>.>.<<+..>.>.<<+++.+.>.>.<<--------.+++..>.>.<<--.+..>.>.<<.++++..>.>.<<-.-----.-.";
+      }
+      runDemo();
+    }
+    function runDemo() {
+      const code = document.getElementById('demoInput').value;
+      const lenEl = document.getElementById('demoLength');
+      if (lenEl) lenEl.innerText = `Length: ${code.length.toLocaleString()} instructions`;
+      const t0 = performance.now();
+      try {
+        const result = BffUI.runBrainfuck(code, "");
+        const elapsed = (performance.now() - t0).toFixed(2);
+        document.getElementById('demoOutput').innerText = result || "(no output produced)";
+        BffUI.showToast(`Executed in ${elapsed}ms via JS VM`);
+      } catch (err) {
+        document.getElementById('demoOutput').innerText = "Execution Error: " + err.message;
+        BffUI.showToast("Brainfuck error: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+name: CI, Docker (GHCR), Showcase Pages & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  packages: write
+  pages: write
+  id-token: write
+
+jobs:
+  validate-and-pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check JavaScript syntax (js/bff-ui.js)
+        run: node --check js/bff-ui.js
+      - name: Verify required UI assets and templates exist
+        run: |
+          test -f css/bff-theme.css
+          test -f js/bff-ui.js
+          test -f templates/bf_modal.html
+          test -f templates/app_shell.html
+          test -f index.html
+      - name: Pack npm tarball
+        run: npm pack
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-release-assets
+          path: |
+            css/bff-theme.css
+            js/bff-ui.js
+            bff-ui-*.tgz
+      - name: Stage clean static directory for GitHub Pages
+        run: |
+          mkdir -p dist-pages
+          cp -r css js templates index.html dist-pages/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-pages
+
+  deploy-pages:
+    needs: validate-and-pack
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  docker:
+    needs: validate-and-pack
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GitHub Container Registry (ghcr.io)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Docker metadata (tags & labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+      - name: Build and push Docker image to ghcr.io
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  release:
+    needs: [validate-and-pack, docker]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-release-assets
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            css/bff-theme.css
+            js/bff-ui.js
+            bff-ui-*.tgz

@@ -1,0 +1,16 @@
+{
+  "name": "bff-ui",
+  "version": "1.0.0",
+  "description": "Zero-dependency shared design system (OS 9 & OS X) and client-side Brainfuck controller library for Applied Tape Mechanics microservices",
+  "keywords": ["brainfuck", "applied-tape-mechanics", "ui-kit", "os9", "osx", "design-system"],
+  "author": "mat-ocl <mat-ocl@pm.me>",
+  "license": "MIT",
+  "files": [
+    "css",
+    "js",
+    "templates",
+    "index.html",
+    "README.md",
+    "LICENSE"
+  ]
+}

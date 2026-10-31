@@ -1,0 +1,39 @@
+<!-- Standalone OS 9 Brainfuck Source Code Inspector Modal Component -->
+<div class="modal-backdrop" id="bfModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span>Brainfuck Source Code & State Machine Inspector</span>
+      </div>
+      <button class="close-btn" onclick="BffUI.closeModal('bfModal')" title="Close"></button>
+    </div>
+    <div class="modal-body">
+      <!-- Subtabs for switching between BF programs or Tape layout -->
+      <div class="modal-subtabs" id="bfModalSubtabs">
+        <!-- Subtabs are dynamically configured or statically inserted here -->
+      </div>
+
+      <!-- Code viewer section -->
+      <div id="bfCodeSection">
+        <div class="modal-actions" style="margin-bottom: 0.75rem;">
+          <div class="op-stat-group" id="bfOpStats">
+            <!-- Dynamically populated by BffUI.renderOpStats -->
+          </div>
+          <div class="modal-actions-left">
+            <button class="preset-btn" onclick="BffUI.toggleWrap()" id="wrapToggleBtn">Unwrap Lines</button>
+            <button class="preset-btn" onclick="BffUI.copyBfCode()">Copy Code</button>
+            <button class="preset-btn" onclick="BffUI.downloadBfFile()">Download .bf</button>
+          </div>
+        </div>
+        <pre class="bf-code-box" id="bfCodeDisplay">Loading Brainfuck code...</pre>
+      </div>
+
+      <!-- Tape layout / Docs section -->
+      <div id="bfTapeSection" style="display:none;">
+        <div id="bfTapeContent">
+          <!-- App-specific tape memory allocation tables -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

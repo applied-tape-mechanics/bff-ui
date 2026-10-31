@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ APP_TITLE | default("System Alert") }}</title>
+  
+  <!-- Shared Applied Tape Mechanics Theme (Loaded at runtime from GitHub Release via jsDelivr CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/applied-tape-mechanics/bff-ui@v1.0.0/css/bff-theme.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-bar">
+        <span class="pulse-dot"></span>
+        <span>{{ ENGINE_BADGE | default("Brainfuck Microservice Engine") }}</span>
+      </div>
+      <h1>{{ APP_HEADING | default("System Application") }}</h1>
+      <p class="subtitle">{{ APP_SUBTITLE | default("OS 9 &bull; Brainfuck Runtime Environment") }}</p>
+    </header>
+
+    <!-- Folder Tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tabPrimary" onclick="setMode('primary')">Mode 1</button>
+      <button class="mode-tab" id="tabSecondary" onclick="setMode('secondary')">Mode 2</button>
+      <button class="mode-tab" onclick="swapContent()">⇄ Swap &amp; Reverse</button>
+      <button class="mode-tab mode-tab-accent" onclick="BffUI.initBfInspector({ modalId: 'bfModal' })">Inspect Brainfuck Code</button>
+    </div>
+
+    <!-- Dual Window Grid -->
+    <div class="grid">
+      <!-- Input Window -->
+      <div class="window">
+        <div class="title-bar">
+          <div class="close-box"></div>
+          <span class="title-text" id="inputTitle">Input Stream</span>
+        </div>
+        <div class="content">
+          <div class="presets" id="presetsContainer"></div>
+          <textarea id="inputText" placeholder="Enter input here..."></textarea>
+          <div class="divider"></div>
+          <div class="footer">
+            <span class="status" id="inputFormatBadge">Format: Raw</span>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+              <div class="btn-ring">
+                <button class="btn" onclick="execute()">Process</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output Window -->
+      <div class="window">
+        <div class="title-bar">
+          <div class="close-box"></div>
+          <span class="title-text" id="outputTitle">Standard Output</span>
+        </div>
+        <div class="content">
+          <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+            <button class="preset-btn" onclick="BffUI.copyText(document.getElementById('outputText').innerText)">Copy Output</button>
+          </div>
+          <pre class="output-view" id="outputText">/* Output will appear here */</pre>
+          <div class="divider"></div>
+          <div class="footer">
+            <span class="status">Status: <span id="statStatus">Idle</span></span>
+            <span class="status">Chars: <span id="statChars">0</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brainfuck Inspector Window / Modal -->
+  <div class="modal-backdrop" id="bfModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="close-box" onclick="BffUI.closeModal('bfModal')" style="cursor:pointer;"></div>
+        <span class="modal-title">Brainfuck Source Inspector</span>
+      </div>
+      <div class="modal-body">
+        <div class="modal-subtabs">
+          <button class="modal-tab active" data-view="engine_1" onclick="BffUI.setBfView('engine_1')">engine_1.bf</button>
+          <button class="modal-tab" data-view="tape" onclick="BffUI.setBfView('tape')">Memory Tape Layout</button>
+        </div>
+
+        <div id="bfCodeSection">
+          <div class="modal-actions" style="margin-bottom: 8px;">
+            <div class="op-stat-group" id="bfOpStats"></div>
+            <div class="modal-actions-left">
+              <button class="preset-btn" onclick="BffUI.toggleWrap()" id="wrapToggleBtn">Unwrap Lines</button>
+              <button class="preset-btn" onclick="BffUI.copyBfCode()">Copy Code</button>
+              <button class="preset-btn" onclick="BffUI.downloadBfFile()">Download .bf</button>
+            </div>
+          </div>
+          <pre class="bf-code-box" id="bfCodeDisplay">Loading...</pre>
+        </div>
+
+        <div id="bfTapeSection" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Applied Tape Mechanics Runtime & UI Kit (Loaded at runtime from GitHub Release via jsDelivr CDN) -->
+  <script src="https://cdn.jsdelivr.net/gh/applied-tape-mechanics/bff-interpreter@v1.0.0/bff-interpreter.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/applied-tape-mechanics/bff-ui@v1.0.0/js/bff-ui.js"></script>
+</body>
+</html>

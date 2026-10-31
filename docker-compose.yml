@@ -1,0 +1,9 @@
+services:
+  bff-ui:
+    build: .
+    container_name: bff-ui-showcase
+    restart: unless-stopped
+    ports:
+      - "8088:80"
+    volumes:
+      - ./:/usr/local/apache2/htdocs/:ro
