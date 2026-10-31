@@ -5,7 +5,7 @@
 
 **Zero-Dependency Shared Design System, Stylesheet, and Client-Side Controller Library for Brainfuck Microservices.**
 
-Provides switchable retro-enterprise desktop themes (**OS 9** & **OS X**), responsive dual-window conversion layouts, preset loaders, interactive Brainfuck source code & tape memory inspector modals, and automatic **Client-Side JS VM Fallback** when no backend server is present.
+Provides switchable retro-enterprise desktop themes (**OS 9** & **OS X**), responsive dual-window conversion layouts, preset loaders, interactive Brainfuck source code & tape memory inspector modals, and automatic **Client-Side JS VM Fallback** when no backend server is present. Explore the **[Live Interactive Styleguide & Component Showcase on GitHub Pages](https://applied-tape-mechanics.github.io/bff-ui/)**.
 
 ---
 
